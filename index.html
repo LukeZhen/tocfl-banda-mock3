@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thi thử TOCFL Band A</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+TC:wght@700&display=swap">
+<style>
+/* Phòng thi máy tính: thanh trên (phần thi, số câu, đồng hồ), một câu một màn hình, bảng số câu ở phần đọc. */
+:root {
+  --paper: #eef1f4; --card: #ffffff; --well: #f5f7f9; --ink: #1d2733; --muted: #5d6b7a; --line: #d3dae2;
+  --accent: #b2342a; --accent-ink: #ffffff; --accent-soft: #f7e1de; --sel: #1f5f99; --sel-soft: #dce9f6;
+  --good: #1f7a4d; --good-soft: #dcefe4; --bad: #b2342a; --bad-soft: #f7e1de; --warn: #9a5b0c; --warn-soft: #f6e7cf;
+  --ui: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif; --zh: "Noto Serif TC", "PMingLiU", "Microsoft JhengHei", serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #12171c; --card: #1b222a; --well: #222b34; --ink: #e6ecf2; --muted: #9fb0c0; --line: #33404c;
+  --accent: #ef7d71; --accent-ink: #2a0d09; --accent-soft: #42221f; --sel: #7fb4e6; --sel-soft: #1e3347;
+  --good: #6fd3a0; --good-soft: #193628; --bad: #ef7d71; --bad-soft: #42221f; --warn: #e9b067; --warn-soft: #3a2b16; color-scheme: dark;
+} }
+* { box-sizing: border-box; }
+html, body { background: var(--paper); }
+body { margin: 0; color: var(--ink); font: 16px/1.55 var(--ui); }
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--sel); outline-offset: 2px; }
+.wrap { max-width: 1000px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 48px; display: flex; flex-direction: column; gap: 16px; }
+.bar { position: sticky; top: 0; z-index: 5; background: var(--card); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 1000px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.bar .sec { font-weight: 700; } .bar .zh { font-family: var(--zh); margin-right: 6px; }
+.bar .num { color: var(--muted); font-size: 14px; }
+.clock { margin-left: auto; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.clock.warn { color: var(--warn); }
+.track { height: 4px; background: var(--line); } .track i { display: block; height: 100%; background: var(--accent); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+h1 { font-family: var(--zh); font-size: 32px; line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-size: 19px; margin: 0; }
+p { margin: 0; }
+.muted { color: var(--muted); font-size: 14px; }
+.eyebrow { color: var(--accent); font-weight: 600; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-size: 13px; font-weight: 600; } td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tscroll { overflow-x: auto; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 220px; min-width: 0; }
+.field label { font-size: 14px; font-weight: 600; }
+.field input { font: inherit; color: inherit; background: var(--well); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.btn { border: 1px solid var(--line); background: var(--well); padding: 10px 16px; border-radius: 8px; font-weight: 600; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn[aria-pressed="true"] { background: var(--sel-soft); border-color: var(--sel); }
+.err { color: var(--bad); font-size: 14px; font-weight: 500; }
+.qhead { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.qno { font-size: 24px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+/* Hình cắt từ đề gốc: luôn nằm trên nền giấy trắng */
+.paper { background: #fff; border-radius: 8px; padding: 10px; border: 1px solid var(--line); }
+.paper img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.paper.solo img { max-height: 46vh; }
+.paper.opts img { max-width: min(100%, 520px); margin: 0; }
+.answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 10px; }
+.ans { border: 2px solid var(--line); background: var(--card); border-radius: 10px; padding: 14px 0; font-size: 22px; font-weight: 700; }
+.ans[aria-pressed="true"] { border-color: var(--sel); background: var(--sel-soft); color: var(--sel); }
+.ans:disabled { cursor: default; }
+.blank { font-weight: 700; color: var(--accent); }
+.note { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 14px; }
+.pulse { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex: none; animation: p 1.2s ease-in-out infinite; }
+@keyframes p { 50% { opacity: .3; } } @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+.palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 6px; }
+.pb { height: 36px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); font-size: 14px; position: relative; padding: 0; font-variant-numeric: tabular-nums; }
+.pb.done { background: var(--sel-soft); border-color: var(--sel); }
+.pb.cur { outline: 2px solid var(--ink); outline-offset: 1px; }
+.pb.flag::after { content: ""; position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
+.nav { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; } .nav .sp { flex: 1; }
+.scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.score { background: var(--well); border-radius: 10px; padding: 14px 16px; }
+.score b { display: block; font-size: 36px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 13px; font-weight: 600; }
+.pill.ok { background: var(--good-soft); color: var(--good); } .pill.no { background: var(--bad-soft); color: var(--bad); } .pill.skip { background: var(--warn-soft); color: var(--warn); }
+.rv { border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.rv .paper img { max-height: 260px; }
+.overlay { position: fixed; inset: 0; background: rgba(10, 16, 22, .6); z-index: 20; display: flex; align-items: center; justify-content: center; padding: 16px; overflow: auto; }
+.overlay .card { max-width: 440px; width: 100%; }
+.overlay .card.wide { max-width: 860px; }
+@media (max-width: 520px) { h1 { font-size: 26px; } .card { padding: 14px; } .ans { font-size: 20px; padding: 12px 0; } }
+@media print { .bar, .noprint { display: none !important; } }
+</style>
+</head>
+<body>
+<div id="bar" class="bar" hidden></div>
+<main id="app" class="wrap"></main>
+<div id="ov" class="overlay" hidden></div>
+<audio id="aud" preload="auto"></audio>
+<audio id="chk" preload="none" src="audio/start.mp3"></audio>
+<script>
+const EXAM = {"listen": [{"part": 1, "title": "第一部分", "vi": "Nhìn tranh, nghe câu hỏi và 3 lựa chọn (A)(B)(C), chọn đáp án đúng.", "intro": "img/L_intro1.png", "n": 3, "items": [{"n": 1, "img": "img/L01.png"}, {"n": 2, "img": "img/L02.png"}, {"n": 3, "img": "img/L03.png"}, {"n": 4, "img": "img/L04.png"}, {"n": 5, "img": "img/L05.png"}, {"n": 6, "img": "img/L06.png"}, {"n": 7, "img": "img/L07.png"}, {"n": 8, "img": "img/L08.png"}, {"n": 9, "img": "img/L09.png"}, {"n": 10, "img": "img/L10.png"}]}, {"part": 2, "title": "第二部分", "vi": "Nghe đối thoại một hỏi một đáp, chọn tranh phù hợp.", "intro": "img/L_intro2.png", "n": 3, "items": [{"n": 11, "img": "img/L11.png"}, {"n": 12, "img": "img/L12.png"}, {"n": 13, "img": "img/L13.png"}, {"n": 14, "img": "img/L14.png"}, {"n": 15, "img": "img/L15.png"}, {"n": 16, "img": "img/L16.png"}, {"n": 17, "img": "img/L17.png"}, {"n": 18, "img": "img/L18.png"}, {"n": 19, "img": "img/L19.png"}, {"n": 20, "img": "img/L20.png"}, {"n": 21, "img": "img/L21.png"}, {"n": 22, "img": "img/L22.png"}, {"n": 23, "img": "img/L23.png"}, {"n": 24, "img": "img/L24.png"}, {"n": 25, "img": "img/L25.png"}]}, {"part": 3, "title": "第三部分", "vi": "Nghe đối thoại 4 câu và câu hỏi, chọn tranh phù hợp.", "intro": "img/L_intro3.png", "n": 3, "items": [{"n": 26, "img": "img/L26.png"}, {"n": 27, "img": "img/L27.png"}, {"n": 28, "img": "img/L28.png"}, {"n": 29, "img": "img/L29.png"}, {"n": 30, "img": "img/L30.png"}, {"n": 31, "img": "img/L31.png"}, {"n": 32, "img": "img/L32.png"}, {"n": 33, "img": "img/L33.png"}, {"n": 34, "img": "img/L34.png"}, {"n": 35, "img": "img/L35.png"}, {"n": 36, "img": "img/L36.png"}, {"n": 37, "img": "img/L37.png"}, {"n": 38, "img": "img/L38.png"}, {"n": 39, "img": "img/L39.png"}, {"n": 40, "img": "img/L40.png"}]}, {"part": 4, "title": "第四部分", "vi": "Nghe đối thoại và câu hỏi, chọn 1 trong 4 đáp án in sẵn. Mỗi câu chỉ đọc 1 lần.", "intro": "img/L_intro4.png", "n": 4, "items": [{"n": 41, "img": "img/L41.png"}, {"n": 42, "img": "img/L42.png"}, {"n": 43, "img": "img/L43.png"}, {"n": 44, "img": "img/L44.png"}, {"n": 45, "img": "img/L45.png"}, {"n": 46, "img": "img/L46.png"}, {"n": 47, "img": "img/L47.png"}, {"n": 48, "img": "img/L48.png"}, {"n": 49, "img": "img/L49.png"}, {"n": 50, "img": "img/L50.png"}]}], "read": [{"part": 1, "title": "第一部分", "vi": "Đọc câu, chọn tranh đúng với nghĩa của câu.", "intro": "img/R_intro1.png", "n": 3, "items": [{"n": 51, "img": "img/R01.png"}, {"n": 52, "img": "img/R02.png"}, {"n": 53, "img": "img/R03.png"}, {"n": 54, "img": "img/R04.png"}, {"n": 55, "img": "img/R05.png"}, {"n": 56, "img": "img/R06.png"}, {"n": 57, "img": "img/R07.png"}, {"n": 58, "img": "img/R08.png"}, {"n": 59, "img": "img/R09.png"}, {"n": 60, "img": "img/R10.png"}, {"n": 61, "img": "img/R11.png"}, {"n": 62, "img": "img/R12.png"}, {"n": 63, "img": "img/R13.png"}, {"n": 64, "img": "img/R14.png"}, {"n": 65, "img": "img/R15.png"}]}, {"part": 2, "title": "第二部分", "vi": "Nhìn tranh, chọn câu đúng với tranh.", "intro": "img/R_intro2.png", "n": 3, "items": [{"n": 66, "img": "img/R16.png"}, {"n": 67, "img": "img/R17.png"}, {"n": 68, "img": "img/R18.png"}, {"n": 69, "img": "img/R19.png"}, {"n": 70, "img": "img/R20.png"}, {"n": 71, "img": "img/R21.png"}, {"n": 72, "img": "img/R22.png"}, {"n": 73, "img": "img/R23.png"}, {"n": 74, "img": "img/R24.png"}, {"n": 75, "img": "img/R25.png"}, {"n": 76, "img": "img/R26.png"}, {"n": 77, "img": "img/R27.png"}, {"n": 78, "img": "img/R28.png"}, {"n": 79, "img": "img/R29.png"}, {"n": 80, "img": "img/R30.png"}]}, {"part": 3, "title": "第三部分", "vi": "Nhìn tranh tình huống, chọn từ đúng điền vào chỗ trống.", "intro": "img/R_intro3.png", "n": 3, "items": [{"n": 81, "img": "img/R31.png", "shared": "img/R_p3_pic.png"}, {"n": 82, "img": "img/R32.png", "shared": "img/R_p3_pic.png"}, {"n": 83, "img": "img/R33.png", "shared": "img/R_p3_pic.png"}, {"n": 84, "img": "img/R34.png", "shared": "img/R_p3_pic.png"}, {"n": 85, "img": "img/R35.png", "shared": "img/R_p3_pic.png"}]}, {"part": 4, "title": "第四部分", "vi": "Đọc đoạn văn, chọn câu (A)–(F) điền vào chỗ trống. Mỗi lựa chọn chỉ dùng một lần.", "intro": "img/R_intro4.png", "n": 6, "items": [{"n": 86, "shared": "img/R_pass1.png", "img": "img/R_opt1.png", "blank": "(36)"}, {"n": 87, "shared": "img/R_pass1.png", "img": "img/R_opt1.png", "blank": "(37)"}, {"n": 88, "shared": "img/R_pass1.png", "img": "img/R_opt1.png", "blank": "(38)"}, {"n": 89, "shared": "img/R_pass1.png", "img": "img/R_opt1.png", "blank": "(39)"}, {"n": 90, "shared": "img/R_pass1.png", "img": "img/R_opt1.png", "blank": "(40)"}, {"n": 91, "shared": "img/R_pass2.png", "img": "img/R_opt2.png", "blank": "(41)"}, {"n": 92, "shared": "img/R_pass2.png", "img": "img/R_opt2.png", "blank": "(42)"}, {"n": 93, "shared": "img/R_pass2.png", "img": "img/R_opt2.png", "blank": "(43)"}, {"n": 94, "shared": "img/R_pass2.png", "img": "img/R_opt2.png", "blank": "(44)"}, {"n": 95, "shared": "img/R_pass2.png", "img": "img/R_opt2.png", "blank": "(45)"}]}, {"part": 5, "title": "第五部分", "vi": "Đọc đoạn văn ngắn, trả lời câu hỏi.", "intro": "img/R_intro5.png", "n": 4, "items": [{"n": 96, "img": "img/R46.png"}, {"n": 97, "img": "img/R47.png"}, {"n": 98, "img": "img/R48.png"}, {"n": 99, "img": "img/R49.png"}, {"n": 100, "img": "img/R50.png"}]}]};
+const DUR = {"intro1.mp3": 151.9, "intro2.mp3": 138.37, "intro3.mp3": 161.23, "intro4.mp3": 173.35, "intro5.mp3": 7.11, "q01.mp3": 42.71, "q02.mp3": 51.77, "q03.mp3": 47.65, "q04.mp3": 44.33, "q05.mp3": 38.61, "q06.mp3": 56.79, "q07.mp3": 40.15, "q08.mp3": 50.89, "q09.mp3": 38.3, "q10.mp3": 39.94, "q11.mp3": 21.71, "q12.mp3": 38.71, "q13.mp3": 31.84, "q14.mp3": 20.35, "q15.mp3": 22.94, "q16.mp3": 32.84, "q17.mp3": 32.57, "q18.mp3": 36.02, "q19.mp3": 20.45, "q20.mp3": 32.47, "q21.mp3": 21.63, "q22.mp3": 27.85, "q23.mp3": 28.19, "q24.mp3": 21.66, "q25.mp3": 29.86, "q26.mp3": 47.33, "q27.mp3": 38.48, "q28.mp3": 47.18, "q29.mp3": 47.62, "q30.mp3": 43.55, "q31.mp3": 44.3, "q32.mp3": 56.27, "q33.mp3": 41.43, "q34.mp3": 47.36, "q35.mp3": 49.97, "q36.mp3": 47.05, "q37.mp3": 38.19, "q38.mp3": 63.43, "q39.mp3": 56.01, "q40.mp3": 44.83, "q41.mp3": 48.38, "q42.mp3": 56.22, "q43.mp3": 53.45, "q44.mp3": 44.46, "q45.mp3": 54.18, "q46.mp3": 53.26, "q47.mp3": 45.3, "q48.mp3": 63.71, "q49.mp3": 47.62, "q50.mp3": 41.61, "start.mp3": 3};
+const KEY_BLOB = "GUNfRnsNTy1BRxNAU0xeYQ8uTU9LEVFDVERjbk9DQ0kHQFtORgAPQU9BXhFYQUwlYwFNTVVJCUJDLEZtDU9YQVETQCNMSGEPVU1ZSxEhQ0JEYxRPVUNJckBNTkZwHU9VQ0lwQE1ORnAcT1VDSXJATU5GcB9PVUNJcUBNTkZwHk9VQ0lyQE1ORnAZT1VDSXFATU5GcBhPVUNJckBNTkZwG09VQ0lwQE1ORnAaT1VDSXBATU5GcBVPVUNJcUBNTkZwFE9VQ0lyQE1ORnMdT1VDSXBATU5GcxxPVUNJcEBNTkZzH09VQ0lxQE1ORnMeT1VDSXFATU5GcxlPVUNJckBNTkZzGE9VQ0lyQE1ORnMbT1VDSXJATU5GcxpPVUNJcUBNTkZzFU9VQ0lxQE1ORnMUT1VDSXFATU5Gch1PVUNJcEBNTkZyHE9VQ0lwQE1ORnIfT1VDSXJATU5Gch5PVUNJcUBNTkZyGU9VQ0lxQE1ORnIYT1VDSXJATU5GchtPVUNJckBNTkZyGk9VQ0lxQE1ORnIVT1VDSXFATU5GchRPVUNJckBNTkZ1HU9VQ0lxQE1ORnUcT1VDSXJATU5GdR9PVUNJd0BNTkZ1Hk9VQ0lwQE1ORnUZT1VDSXBATU5GdRhPVUNJcEBNTkZ1G09VQ0lyQE1ORnUaT1VDSXFATU5GdRVPVUNJckBNTkZ1FE9VQ0lyQE1ORnQdT1VDSXBATU5GdBxPVUNJckBNTkZ0H09VQ0lyQE1ORnQeT1VDSXFATU5GdBlPVUNJcEBNTkZ0GE9VQ0lwQE1ORnQbT1VDSXBATU5GdBpPVUNJcEBNTkZ0FU9VQ0lyQE1ORnQUT1VDSXFATU5Gdx1PVUNJckBNTkZ3HE9VQ0lwQE1ORncfT1VDSXBATU5Gdx5PVUNJcEBNTkZ3GU9VQ0lxQE1ORncYT1VDSXJATU5GdxtPVUNJcUBNTkZ3Gk9VQ0lxQE1ORncVT1VDSXBATU5GdxRPVUNJcEBNTkZ2HU9VQ0lwQE1ORnYcT1VDSXJATU5Gdh9PVUNJckBNTkZ2Hk9VQ0lxQE1ORnYZT1VDSXBATU5GdhhPVUNJckBNTkZ2G09VQ0lwQE1ORnYaT1VDSXJATU5GdhVPVUNJckBNTkZ2FE9VQ0lxQE1ORnkdT1VDSXFATU5GeRxPVUNJcUBNTkZ5H09VQ0lyQE1ORnkeT1VDSXBATU5GeRlPVUNJckBNTkZ5GE9VQ0lxQE1ORnkbT1VDSXFATU5GeRpPVUNJdkBNTkZ5FU9VQ0lyQE1ORnkUT1VDSXBATU5GeB1PVUNJdUBNTkZ4HE9VQ0l1QE1ORngfT1VDSXJATU5GeB5PVUNJd0BNTkZ4GU9VQ0lwQE1ORngYT1VDSXFATU5GeBtPVUNJcUBNTkZ4Gk9VQ0lxQE1ORngVT1VDSXdATU5GeBRPVUNJd0BNTkZwHV1NWUsRJkMT";
+const CONFIG = { readSec: 60 * 60, gapSec: 90, store: "tocfl_bandA_mock3_v1" };
+const L = "ABCDEF";
+
+// Danh sách phát phần nghe: hướng dẫn từng phần rồi tới từng câu, đúng thứ tự file đề gốc
+const PLAY = [];
+EXAM.listen.forEach(p => { PLAY.push({ file: "intro" + p.part + ".mp3", part: p.part }); p.items.forEach(it => PLAY.push({ file: "q" + String(it.n).padStart(2, "0") + ".mp3", q: it.n })); });
+PLAY.push({ file: "intro5.mp3", end: true });
+let acc = 0; PLAY.forEach(x => { x.t0 = acc; acc += DUR[x.file] || 30; }); const TOTAL = acc;
+
+let S = load() || fresh();
+function fresh() { return { phase: "home", name: "", cls: "", ans: {}, flags: {}, cur: 51 }; }
+function load() { try { return JSON.parse(localStorage.getItem(CONFIG.store)); } catch (e) { return null; } }
+function save() { try { localStorage.setItem(CONFIG.store, JSON.stringify(S)); } catch (e) {} }
+const $ = id => document.getElementById(id);
+const app = $("app"), bar = $("bar"), ov = $("ov"), aud = $("aud"), chk = $("chk");
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const mmss = s => { s = Math.max(0, Math.ceil(s)); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+function find(n) { for (const sec of [EXAM.listen, EXAM.read]) for (const p of sec) for (const it of p.items) if (it.n === n) return { p, it }; }
+const shown = n => n > 50 ? n - 50 : n;
+
+function renderBar(zh, vi, num, clock, pct, warn) {
+  bar.hidden = false;
+  bar.innerHTML = `<div class="bar-in"><span class="sec"><span class="zh">${zh}</span>${vi}</span><span class="num">${num}</span><span class="clock ${warn ? "warn" : ""}" id="clk">${clock}</span></div><div class="track"><i id="trk" style="width:${pct}%"></i></div>`;
+}
+function answersHtml(n, count, locked) {
+  return `<div class="answers">` + L.slice(0, count).split("").map(c => `<button type="button" class="ans" data-l="${c}" aria-pressed="${S.ans[n] === c}" ${locked ? "disabled" : ""}>${c}</button>`).join("") + `</div>`;
+}
+function bindAnswers(n, after) {
+  app.querySelectorAll(".ans").forEach(b => b.addEventListener("click", () => {
+    S.ans[n] = b.dataset.l; save();
+    app.querySelectorAll(".ans").forEach(x => x.setAttribute("aria-pressed", x === b));
+    if (after) after();
+  }));
+}
+
+/* ---------- mở đầu ---------- */
+function showHome() {
+  bar.hidden = true;
+  app.innerHTML = `<div class="card">
+    <span class="eyebrow">TOCFL · 華語文能力測驗 · 入門基礎級 Band A · 模擬試題</span>
+    <h1>華語文能力測驗 模擬考</h1>
+    <p>Bài thi thử gồm phần nghe và phần đọc, lấy nguyên đề thi thử chính thức. Phần nghe phát liên tục như phòng thi thật: không dừng, không nghe lại, câu hỏi tự chuyển. Phần đọc được quay lại sửa bài trước khi nộp.</p>
+    <div class="tscroll"><table>
+      <tr><th>Phần thi</th><th>Nội dung</th><th>Số câu</th><th>Thời gian</th></tr>
+      <tr><td><b>聽力</b> Nghe</td><td>Phần 1: nhìn tranh, nghe câu hỏi và lựa chọn<br>Phần 2: đối thoại ngắn, chọn tranh<br>Phần 3: đối thoại 4 câu, chọn tranh<br>Phần 4: đối thoại, chọn 1 trong 4 câu</td><td class="n">10<br>15<br>15<br>10</td><td class="n">khoảng ${Math.round(TOTAL / 60)} phút</td></tr>
+      <tr><td><b>閱讀</b> Đọc</td><td>Phần 1: đọc câu, chọn tranh<br>Phần 2: nhìn tranh, chọn câu<br>Phần 3: chọn từ điền chỗ trống<br>Phần 4: điền câu vào đoạn văn<br>Phần 5: đọc hiểu đoạn văn</td><td class="n">15<br>15<br>5<br>10<br>5</td><td class="n">${CONFIG.readSec / 60} phút</td></tr>
+    </table></div>
+  </div>
+  <div class="card">
+    <h2>Trước khi vào thi</h2>
+    <div class="row"><div class="field"><label for="fName">Họ tên</label><input id="fName" autocomplete="name" value="${esc(S.name)}"></div><div class="field"><label for="fCls">Lớp</label><input id="fCls" value="${esc(S.cls)}"></div></div>
+    <div class="row"><button type="button" class="btn" id="btnChk">Thử âm thanh</button><span class="muted" id="chkMsg">Đeo tai nghe, dùng mạng ổn định. Bấm thử để kiểm tra loa và âm lượng.</span></div>
+    <p class="muted">Không khóa màn hình hay chuyển sang ứng dụng khác khi đang nghe. Đoạn bị lỡ sẽ không nghe lại được.</p>
+    <p class="err" id="homeErr" hidden></p>
+    <div class="row"><button type="button" class="btn primary" id="btnStart">Bắt đầu phần nghe</button></div>
+  </div>`;
+  $("btnChk").addEventListener("click", () => { chk.currentTime = 0; chk.play().then(() => { $("chkMsg").textContent = "Nếu nghe thấy âm thanh là đã sẵn sàng."; }).catch(() => { $("chkMsg").textContent = "Không phát được âm thanh. Hãy tải lại trang hoặc đổi trình duyệt."; }); });
+  $("btnStart").addEventListener("click", () => {
+    const name = $("fName").value.trim();
+    if (!name) { const e = $("homeErr"); e.hidden = false; e.textContent = "Hãy nhập họ tên để kết quả ghi đúng tên bạn."; $("fName").focus(); return; }
+    S.name = name; S.cls = $("fCls").value.trim(); S.phase = "listen"; S.listenStart = Date.now(); save();
+    EXAM.listen.forEach(p => { new Image().src = p.intro; p.items.forEach(it => { new Image().src = it.img; }); });
+    playFrom(0);
+  });
+}
+
+/* ---------- phần nghe ---------- */
+let idx = -1, ticker = null, expectPause = false;
+function locate(t) { let i = 0; while (i + 1 < PLAY.length && PLAY[i + 1].t0 <= t) i++; return { i, off: t - PLAY[i].t0 }; }
+const elapsed = () => (Date.now() - S.listenStart) / 1000;
+function playFrom(t) {
+  ov.hidden = true;
+  if (t >= TOTAL - 1) { finishListening(); return; }
+  const { i, off } = locate(t);
+  loadTrack(i, off);
+}
+function loadTrack(i, off) {
+  idx = i; const x = PLAY[i];
+  renderListen();
+  expectPause = true;
+  aud.src = "audio/" + x.file;
+  const go = () => { try { if (off > 0.5) aud.currentTime = off; } catch (e) {} aud.play().then(() => { expectPause = false; tick(); }).catch(() => resumeOverlay("Trình duyệt chưa cho phát âm thanh. Bấm để nghe."));};
+  aud.addEventListener("loadedmetadata", go, { once: true });
+  aud.load();
+}
+aud.addEventListener("ended", () => { if (S.phase !== "listen") return; if (idx + 1 < PLAY.length) loadTrack(idx + 1, 0); else finishListening(); });
+aud.addEventListener("pause", () => { if (S.phase === "listen" && !aud.ended && !expectPause) resumeOverlay("Âm thanh bị dừng (có thể do khóa màn hình hoặc chuyển ứng dụng)."); });
+aud.addEventListener("error", () => { if (S.phase === "listen") resumeOverlay("Không tải được file nghe. Kiểm tra mạng rồi bấm để nghe tiếp."); });
+function tick() {
+  clearInterval(ticker);
+  ticker = setInterval(() => {
+    const t = PLAY[idx].t0 + (aud.currentTime || 0);
+    const c = $("clk"), tr = $("trk");
+    if (c) c.textContent = mmss(TOTAL - t);
+    if (tr) tr.style.width = (t / TOTAL * 100) + "%";
+  }, 500);
+}
+function resumeOverlay(msg) {
+  ov.hidden = false;
+  ov.innerHTML = `<div class="card"><h2>Âm thanh đang dừng</h2><p>${msg}</p><p class="muted">Đề tiếp tục theo thời gian thật nên đoạn đã trôi qua sẽ không nghe lại.</p><button type="button" class="btn primary" id="btnRes">Nghe tiếp</button></div>`;
+  $("btnRes").addEventListener("click", () => playFrom(elapsed()));
+}
+function renderListen() {
+  const x = PLAY[idx], t = x.t0;
+  const qn = x.q || "";
+  renderBar("聽力", "Nghe", qn ? `Câu ${qn}/50` : "", mmss(TOTAL - t), t / TOTAL * 100);
+  if (x.end) { app.innerHTML = `<div class="card"><h2>聽力考試到這裡全部結束。</h2><div class="note"><span class="pulse"></span>Phần nghe kết thúc.</div></div>`; return; }
+  if (x.part) {
+    const p = EXAM.listen.find(pp => pp.part === x.part);
+    app.innerHTML = `<div class="card"><span class="eyebrow">Phần ${p.part}</span><h1>${p.title}</h1><p>${p.vi}</p><div class="note"><span class="pulse"></span>Đang đọc hướng dẫn. Câu hỏi sẽ tự hiện.</div><div class="paper"><img src="${p.intro}" alt="Hướng dẫn ${p.title}"></div></div>`;
+    return;
+  }
+  const { p, it } = find(x.q);
+  app.innerHTML = `<div class="card">
+    <div class="qhead"><span class="qno">${it.n}</span><span class="muted">Phần ${p.part} · ${p.vi}</span></div>
+    <div class="paper ${p.part === 1 ? "solo" : p.part === 4 ? "opts" : ""}"><img src="${it.img}" alt="Câu ${it.n}"></div>
+    ${answersHtml(it.n, p.n, false)}
+    <div class="note"><span class="pulse"></span>Câu hỏi tự chuyển, không quay lại được.</div></div>`;
+  bindAnswers(it.n);
+}
+function finishListening() { clearInterval(ticker); expectPause = true; aud.pause(); S.phase = "gap"; S.gapStart = Date.now(); save(); showGap(); }
+
+/* ---------- nghỉ ---------- */
+function showGap() {
+  renderBar("休息", "Chuyển phần", "", mmss(CONFIG.gapSec), 100);
+  app.innerHTML = `<div class="card"><h2>Đã xong phần nghe</h2><p>Phần đọc có 50 câu, làm trong ${CONFIG.readSec / 60} phút. Phần đọc tự bắt đầu khi hết giờ nghỉ.</p><div class="row"><button type="button" class="btn primary" id="btnRead">Bắt đầu phần đọc ngay</button></div></div>`;
+  $("btnRead").addEventListener("click", startReading);
+  clearInterval(ticker);
+  ticker = setInterval(() => { const left = CONFIG.gapSec - (Date.now() - S.gapStart) / 1000; if (left <= 0) startReading(); else { const c = $("clk"); if (c) c.textContent = mmss(left); } }, 500);
+}
+
+/* ---------- phần đọc ---------- */
+const readLeft = () => CONFIG.readSec - (Date.now() - S.readStart) / 1000;
+function startReading() {
+  clearInterval(ticker);
+  S.phase = "read"; S.readStart = S.readStart || Date.now(); S.cur = S.cur || 51; save();
+  showRead();
+  ticker = setInterval(() => { const left = readLeft(); if (left <= 0) { submit(); return; } const c = $("clk"); if (c) { c.textContent = mmss(left); c.classList.toggle("warn", left <= 300); } }, 500);
+}
+function paint() { app.querySelectorAll(".pb").forEach(b => { const n = +b.dataset.n; b.classList.toggle("done", !!S.ans[n]); b.classList.toggle("flag", !!S.flags[n]); b.classList.toggle("cur", n === S.cur); }); }
+function showRead() {
+  const n = S.cur, { p, it } = find(n), left = readLeft(), first = p.items[0].n === n;
+  renderBar("閱讀", "Đọc", `Câu ${n - 50}/50`, mmss(left), (n - 50) / 50 * 100, left <= 300);
+  const nums = []; for (let i = 51; i <= 100; i++) nums.push(i);
+  app.innerHTML = `<div class="card">
+    <div class="qhead"><span class="qno">${n - 50}</span><span class="muted">Phần ${p.part} · ${p.vi}</span><span style="flex:1"></span><button type="button" class="btn" id="btnGuide">Xem hướng dẫn phần ${p.part}</button></div>
+    ${it.shared ? `<div class="paper"><img src="${it.shared}" alt="Tranh hoặc đoạn văn chung"></div>` : ""}
+    ${it.blank ? `<p>Chọn câu điền vào chỗ trống <span class="blank">${esc(it.blank)}</span>:</p>` : ""}
+    <div class="paper ${p.part === 4 ? "opts" : ""}"><img src="${it.img}" alt="Câu ${n - 50}"></div>
+    ${answersHtml(n, p.n, false)}
+    <div class="nav">
+      <button type="button" class="btn" id="prev" ${n === 51 ? "disabled" : ""}>← Câu trước</button>
+      <button type="button" class="btn" id="flag" aria-pressed="${!!S.flags[n]}">${S.flags[n] ? "Bỏ đánh dấu" : "Đánh dấu xem lại"}</button>
+      <span class="sp"></span>
+      ${n < 100 ? `<button type="button" class="btn primary" id="next">Câu sau →</button>` : `<button type="button" class="btn primary" id="end">Xem lại và nộp bài</button>`}
+    </div></div>
+  <div class="card"><div class="palette">${nums.map(i => `<button type="button" class="pb" data-n="${i}" aria-label="Câu ${i - 50}">${i - 50}</button>`).join("")}</div>
+    <div class="row"><span class="muted" id="cnt"></span><span style="flex:1"></span><button type="button" class="btn" id="sub">Nộp bài</button></div></div>`;
+  const count = () => { $("cnt").textContent = `Đã làm ${nums.filter(i => S.ans[i]).length}/50 câu. Chấm cam là câu đang đánh dấu.`; };
+  bindAnswers(n, () => { paint(); count(); });
+  paint(); count();
+  const go = m => { S.cur = m; save(); showRead(); window.scrollTo(0, 0); };
+  $("prev").addEventListener("click", () => go(n - 1));
+  if ($("next")) $("next").addEventListener("click", () => go(n + 1));
+  if ($("end")) $("end").addEventListener("click", askSubmit);
+  $("sub").addEventListener("click", askSubmit);
+  $("flag").addEventListener("click", () => { S.flags[n] = !S.flags[n]; save(); showRead(); });
+  $("btnGuide").addEventListener("click", () => { ov.hidden = false; ov.innerHTML = `<div class="card wide"><div class="paper"><img src="${p.intro}" alt="Hướng dẫn"></div><button type="button" class="btn primary" id="cg">Đóng</button></div>`; $("cg").addEventListener("click", () => { ov.hidden = true; }); });
+  app.querySelectorAll(".pb").forEach(b => b.addEventListener("click", () => go(+b.dataset.n)));
+  if (first && !S["seen" + p.part]) { S["seen" + p.part] = 1; save(); $("btnGuide").click(); }
+}
+function askSubmit() {
+  const miss = []; for (let i = 51; i <= 100; i++) if (!S.ans[i]) miss.push(i - 50);
+  ov.hidden = false;
+  ov.innerHTML = `<div class="card"><h2>Nộp bài?</h2><p>${miss.length ? `Bạn còn ${miss.length} câu đọc chưa làm: ${miss.slice(0, 15).join(", ")}${miss.length > 15 ? "…" : ""}.` : "Bạn đã làm đủ 50 câu đọc."} Nộp rồi thì không sửa được nữa.</p><div class="row"><button type="button" class="btn primary" id="ok">Nộp bài</button><button type="button" class="btn" id="no">Làm tiếp</button></div></div>`;
+  $("no").addEventListener("click", () => { ov.hidden = true; });
+  $("ok").addEventListener("click", () => { ov.hidden = true; submit(); });
+}
+function submit() { clearInterval(ticker); S.phase = "result"; S.doneAt = S.doneAt || Date.now(); save(); showResult(); }
+
+/* ---------- chấm điểm ---------- */
+function decodeKey() {
+  const raw = atob(KEY_BLOB), k = "bandA-mock3", b = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) b[i] = raw.charCodeAt(i) ^ k.charCodeAt(i % k.length);
+  return JSON.parse(new TextDecoder().decode(b));
+}
+function grade(K) {
+  const r = { L: 0, R: 0, parts: [], wrong: [] };
+  [[EXAM.listen, "L", "Nghe"], [EXAM.read, "R", "Đọc"]].forEach(([sec, id, vi]) => sec.forEach(p => {
+    let ok = 0; p.items.forEach(it => { if (S.ans[it.n] === K[it.n]) ok++; else r.wrong.push((id === "L" ? "N" : "Đ") + shown(it.n)); });
+    r[id] += ok; r.parts.push({ vi, part: p.part, zh: p.title, ok, total: p.items.length });
+  }));
+  return r;
+}
+function review(K, onlyWrong) {
+  let o = "";
+  [[EXAM.listen, "聽力 Nghe"], [EXAM.read, "閱讀 Đọc"]].forEach(([sec, title]) => sec.forEach(p => p.items.forEach(it => {
+    const mine = S.ans[it.n], ok = mine === K[it.n];
+    if (onlyWrong && ok) return;
+    const pill = ok ? `<span class="pill ok">Đúng</span>` : mine ? `<span class="pill no">Sai</span>` : `<span class="pill skip">Bỏ trống</span>`;
+    o += `<div class="rv"><div class="row"><b>${shown(it.n)}</b><span class="muted">${title} · Phần ${p.part}</span>${pill}<span class="muted">Bạn chọn: <b>${mine || "–"}</b> · Đáp án: <b>${K[it.n]}</b></span></div>
+      ${it.shared ? `<div class="paper"><img loading="lazy" src="${it.shared}" alt=""></div>` : ""}${it.blank ? `<p>Chỗ trống <span class="blank">${esc(it.blank)}</span></p>` : ""}
+      <div class="paper"><img loading="lazy" src="${it.img}" alt="Câu ${shown(it.n)}"></div></div>`;
+  })));
+  return o || "<p>Bạn không sai câu nào.</p>";
+}
+function showResult() {
+  const K = decodeKey(), r = grade(K), when = new Date(S.doneAt || Date.now()).toLocaleString("vi-VN");
+  renderBar("成績", "Kết quả", "", "", 100);
+  const summary = `${S.name}${S.cls ? " – lớp " + S.cls : ""} – Thi thử TOCFL Band A (mock 3)\nNghe: ${r.L}/50 câu đúng – Đọc: ${r.R}/50 câu đúng\nSai hoặc bỏ trống: ${r.wrong.join(", ") || "không có"}\nNộp lúc: ${when}`;
+  const canPrint = window.self === window.top;
+  app.innerHTML = `<div class="card">
+    <span class="eyebrow">${esc(S.name)}${S.cls ? " · Lớp " + esc(S.cls) : ""} · ${when}</span>
+    <h1>Kết quả thi thử</h1>
+    <div class="scores">
+      <div class="score">聽力 Nghe<b>${r.L}/50</b><span class="muted">${Math.round(r.L * 2)}% câu đúng</span></div>
+      <div class="score">閱讀 Đọc<b>${r.R}/50</b><span class="muted">${Math.round(r.R * 2)}% câu đúng</span></div>
+    </div>
+    <p class="muted">Đây là số câu đúng. Điểm TOCFL chính thức được quy đổi theo thang riêng của kỳ thi, nên kết quả này chỉ dùng để tham khảo.</p>
+    <div class="tscroll"><table><tr><th>Phần</th><th>Đúng</th></tr>${r.parts.map(p => `<tr><td>${p.vi} · Phần ${p.part} ${p.zh}</td><td class="n">${p.ok}/${p.total}</td></tr>`).join("")}</table></div>
+    <div class="row noprint"><button type="button" class="btn primary" id="cp">Sao chép kết quả gửi cô</button>${canPrint ? `<button type="button" class="btn" id="pr">In hoặc lưu PDF</button>` : ""}<button type="button" class="btn" id="again">Làm lại từ đầu</button></div>
+    <p class="muted" id="cpm" hidden></p></div>
+  <div class="card"><div class="row noprint"><h2 style="flex:1">Xem lại bài</h2><button type="button" class="btn" id="tw" aria-pressed="true">Câu sai</button><button type="button" class="btn" id="ta" aria-pressed="false">Tất cả</button></div><div id="rvb" style="display:flex;flex-direction:column;gap:12px">${review(K, true)}</div></div>`;
+  const setR = w => { $("rvb").innerHTML = review(K, w); $("tw").setAttribute("aria-pressed", w); $("ta").setAttribute("aria-pressed", !w); };
+  $("tw").addEventListener("click", () => setR(true)); $("ta").addEventListener("click", () => setR(false));
+  if ($("pr")) $("pr").addEventListener("click", () => window.print());
+  $("cp").addEventListener("click", () => { const m = $("cpm"); m.hidden = false; navigator.clipboard.writeText(summary).then(() => { m.textContent = "Đã sao chép. Dán vào tin nhắn gửi cho cô."; }).catch(() => { m.textContent = summary; }); });
+  $("again").addEventListener("click", () => {
+    ov.hidden = false;
+    ov.innerHTML = `<div class="card"><h2>Làm lại từ đầu?</h2><p>Kết quả hiện tại sẽ bị xóa. Hãy sao chép kết quả trước nếu cần gửi cô.</p><div class="row"><button type="button" class="btn primary" id="y">Xóa và làm lại</button><button type="button" class="btn" id="n">Giữ kết quả</button></div></div>`;
+    $("n").addEventListener("click", () => { ov.hidden = true; });
+    $("y").addEventListener("click", () => { ov.hidden = true; const nm = S.name, c = S.cls; S = fresh(); S.name = nm; S.cls = c; save(); showHome(); });
+  });
+}
+
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || !ov.hidden) return;
+  const b = app.querySelector(`.ans[data-l="${e.key.toUpperCase()}"]`); if (b && !b.disabled) b.click();
+});
+
+function boot() {
+  if (S.phase === "listen") {
+    if (elapsed() >= TOTAL - 1) { finishListening(); return; }
+    idx = locate(elapsed()).i; renderListen();
+    resumeOverlay("Trang vừa được tải lại.");
+  } else if (S.phase === "gap") { if ((Date.now() - S.gapStart) / 1000 >= CONFIG.gapSec) startReading(); else showGap(); }
+  else if (S.phase === "read") { if (readLeft() <= 0) submit(); else startReading(); }
+  else if (S.phase === "result") showResult();
+  else showHome();
+}
+boot();
+</script>
+</body>
+</html>
